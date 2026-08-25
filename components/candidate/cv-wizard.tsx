@@ -281,10 +281,10 @@ export function CvWizard({ initialCv = null }: { initialCv?: CvData | null }) {
           <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-ocean-100/70 pt-5">
             <Button
               variant="ai"
-              onClick={() => router.push("/candidate/jobs")}
+              onClick={() => router.push("/candidate/cv-review")}
               className="gap-2"
             >
-              <Briefcase className="h-4 w-4" /> Browse Jobs
+              <Briefcase className="h-4 w-4" /> Review My CV
             </Button>
             <Button variant="outline-soft" onClick={handleDownloadPdf} disabled={isDownloading} className="gap-2">
               {isDownloading ? (

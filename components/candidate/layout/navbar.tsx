@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SkillSyncLogo } from "@/components/candidate/layout/skillsync-logo";
-import { LogOut, FileText, Briefcase } from "lucide-react";
+import { LogOut, FileText, Sparkles, Briefcase } from "lucide-react";
 import { signOut } from "@/actions/sign-out";
 
 const NAV_ITEMS = [
   { label: "CV Builder", href: "/candidate/resume-builder", icon: FileText },
+  { label: "CV Review", href: "/candidate/cv-review", icon: Sparkles },
   { label: "Jobs", href: "/candidate/jobs", icon: Briefcase },
 ];
 
