@@ -1,5 +1,6 @@
 import { streamObject } from "ai";
 import { createOpenRouterProvider, OPENROUTER_MODEL } from "@/lib/ai/openrouter";
+import { createGeminiProvider, GEMINI_MODEL } from "@/lib/ai/gemini";
 import { scoringResultSchema } from "@/lib/ai/schemas";
 import { buildScoringPrompt, buildTranscriptEntries } from "@/lib/ai/scoring-engine";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -16,6 +17,7 @@ export async function POST(
 ) {
   const body = await req.json().catch(() => null);
   const answers: string[] = Array.isArray(body?.answers) ? body.answers : [];
+  const useFallback = Boolean(body?.fallback);
 
   if (answers.length === 0) {
     return new Response(JSON.stringify({ error: "answers array is required" }), {
@@ -57,7 +59,11 @@ export async function POST(
     );
   }
 
-  const openrouter = createOpenRouterProvider();
+  // See app/api/hr/jobs/stream/route.ts for why this is a client-driven
+  // retry instead of an in-request fallback.
+  const model = useFallback
+    ? createGeminiProvider()(GEMINI_MODEL)
+    : createOpenRouterProvider()(OPENROUTER_MODEL);
   const { system, user } = buildScoringPrompt({
     cvJson: candidate.cv_json,
     jdText: job.jd_text,
@@ -67,7 +73,7 @@ export async function POST(
   });
 
   const result = streamObject({
-    model: openrouter(OPENROUTER_MODEL),
+    model,
     schema: scoringResultSchema,
     temperature: 0.2,
     system,

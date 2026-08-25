@@ -7,7 +7,16 @@ sketch of a job description into a complete, professional job description with
 clear responsibilities and qualifications sections. Do not invent concrete facts
 the input didn't mention (salary, company name, benefits, headcount); instead
 write plausible, standard responsibilities and qualifications typical for a role
-with this title.`;
+with this title.
+
+Output plain text only — this is stored and displayed as-is in a plain
+textarea and on plain-text candidate-facing pages, not rendered as Markdown.
+Never use Markdown syntax (no #, ##, **, -, *, or numbered-list markers) and
+never use bracket placeholders like [Location] or [Company Name] for
+information the input didn't give you — omit that detail entirely instead of
+placeholding it. Use plain paragraphs, with a blank line between sections
+and a line like "Responsibilities:" or "Qualifications:" written as normal
+text, not a heading.`;
 
 /**
  * "Enhance with AI" (new-job / edit-job forms): lets HR type a short sketch

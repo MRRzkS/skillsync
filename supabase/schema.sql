@@ -5,8 +5,17 @@ create table if not exists candidate_profiles (
   id uuid primary key default gen_random_uuid(),
   full_name text not null,
   cv_json jsonb not null,
-  created_at timestamp with time zone default now()
+  created_at timestamp with time zone default now(),
+  -- Links a CV to the candidate's login account, so /candidate/jobs knows
+  -- whose CV to attach to a new application and /candidate can tell whether
+  -- someone still needs to build one. Nullable: the 3 pre-existing "Jordan
+  -- Alvarez" rows (and any CV built before this column existed) predate
+  -- candidate auth and simply have no owner.
+  user_id uuid references auth.users(id)
 );
+
+-- Additive migration for an already-provisioned DB (run once):
+-- alter table candidate_profiles add column if not exists user_id uuid references auth.users(id);
 
 create table if not exists job_vacancies (
   id uuid primary key default gen_random_uuid(),

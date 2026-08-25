@@ -1,5 +1,6 @@
 import { streamObject } from "ai";
 import { createOpenRouterProvider, OPENROUTER_MODEL } from "@/lib/ai/openrouter";
+import { createGeminiProvider, GEMINI_MODEL } from "@/lib/ai/gemini";
 import { scenarioQuestionsSchema } from "@/lib/ai/schemas";
 import { buildScenarioPrompt } from "@/lib/ai/scenario-generator";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -14,6 +15,7 @@ export async function POST(req: Request) {
   const title = String(body?.title ?? "").trim();
   const jdText = String(body?.jd_text ?? "").trim();
   const locale = typeof body?.locale === "string" ? body.locale : null;
+  const useFallback = Boolean(body?.fallback);
 
   if (!id || !title || !jdText) {
     return new Response(
@@ -22,11 +24,18 @@ export async function POST(req: Request) {
     );
   }
 
-  const openrouter = createOpenRouterProvider();
+  // OpenRouter's free tier rate-limits hard. Unlike generateJson, a
+  // streaming request already has bytes on the wire the moment it starts, so
+  // we can't switch models mid-stream — instead the client retries once with
+  // `fallback: true` when the first attempt's onError fires (see
+  // app/hr/new-job/page.tsx), and we honor that by using Gemini here.
+  const model = useFallback
+    ? createGeminiProvider()(GEMINI_MODEL)
+    : createOpenRouterProvider()(OPENROUTER_MODEL);
   const { system, user } = buildScenarioPrompt({ title, jdText, locale });
 
   const result = streamObject({
-    model: openrouter(OPENROUTER_MODEL),
+    model,
     schema: scenarioQuestionsSchema,
     temperature: 0.4,
     system,

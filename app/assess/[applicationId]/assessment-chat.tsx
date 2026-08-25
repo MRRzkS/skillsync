@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useObject } from "@ai-sdk/react";
 import { saveDraftAnswerAction } from "@/actions/submit-assessment";
 import { scoringResultSchema } from "@/lib/ai/schemas";
@@ -25,18 +25,35 @@ export default function AssessmentChat({
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [isSavingDraft, startDraftSave] = useTransition();
+  // One-shot retry against Gemini when OpenRouter fails — see
+  // app/api/assess/[applicationId]/stream/route.ts.
+  const hasRetried = useRef(false);
 
   const { object, submit, isLoading } = useObject({
     api: `/api/assess/${applicationId}/stream`,
     schema: scoringResultSchema,
     onFinish: ({ error: finishError }) => {
       if (finishError) {
+        // OpenRouter's rate-limit surfaces here (stream completes with no
+        // valid object), not via onError — same one-shot Gemini retry.
+        if (!hasRetried.current) {
+          hasRetried.current = true;
+          submit({ answers, fallback: true });
+          return;
+        }
         setError("AI scoring failed. Please try submitting again.");
         return;
       }
       setSubmitted(true);
     },
-    onError: (err) => setError(err.message),
+    onError: (err) => {
+      if (!hasRetried.current) {
+        hasRetried.current = true;
+        submit({ answers, fallback: true });
+        return;
+      }
+      setError(err.message);
+    },
   });
 
   const elapsedSeconds = useElapsedSeconds(isLoading);
@@ -66,6 +83,7 @@ export default function AssessmentChat({
         return;
       }
 
+      hasRetried.current = false;
       submit({ answers });
     });
   }

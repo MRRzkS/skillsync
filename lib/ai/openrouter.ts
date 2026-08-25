@@ -1,6 +1,7 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { generateObject } from "ai";
+import { generateObject, generateText } from "ai";
 import type { z } from "zod";
+import { createGeminiProvider, GEMINI_MODEL } from "./gemini";
 
 // OpenRouter exposes an OpenAI-compatible API, so we point the official
 // Vercel AI SDK OpenAI provider at OpenRouter's base URL with a free model.
@@ -41,15 +42,56 @@ export async function generateJson<T>(params: {
   schema: z.ZodType<T>;
   temperature?: number;
 }): Promise<T> {
-  const openrouter = createOpenRouterProvider();
+  try {
+    const openrouter = createOpenRouterProvider();
+    const { object } = await generateObject({
+      model: openrouter(OPENROUTER_MODEL),
+      schema: params.schema,
+      temperature: params.temperature ?? 0.4,
+      system: params.system,
+      prompt: params.user,
+    });
+    return object;
+  } catch (err) {
+    // OpenRouter's free tier rate-limits hard — fall back to Gemini rather
+    // than surface an error the user can't do anything about.
+    console.error("[ai] OpenRouter failed, falling back to Gemini:", err);
+    const gemini = createGeminiProvider();
+    const { object } = await generateObject({
+      model: gemini(GEMINI_MODEL),
+      schema: params.schema,
+      temperature: params.temperature ?? 0.4,
+      system: params.system,
+      prompt: params.user,
+    });
+    return object;
+  }
+}
 
-  const { object } = await generateObject({
-    model: openrouter(OPENROUTER_MODEL),
-    schema: params.schema,
-    temperature: params.temperature ?? 0.4,
-    system: params.system,
-    prompt: params.user,
-  });
-
-  return object;
+/** Same OpenRouter-then-Gemini fallback as generateJson, for plain text output. */
+export async function generateTextWithFallback(params: {
+  system: string;
+  user: string;
+  temperature?: number;
+}): Promise<string> {
+  try {
+    const openrouter = createOpenRouterProvider();
+    const { text } = await generateText({
+      model: openrouter(OPENROUTER_MODEL),
+      temperature: params.temperature ?? 0.4,
+      system: params.system,
+      prompt: params.user,
+    });
+    return text;
+  } catch (err) {
+    console.error("[ai] OpenRouter failed, falling back to Gemini:", err);
+    const gemini = createGeminiProvider();
+    const { text } = await generateText({
+      model: gemini(GEMINI_MODEL),
+      temperature: params.temperature ?? 0.4,
+      system: params.system,
+      prompt: params.user,
+    });
+    return text;
+  }
 }

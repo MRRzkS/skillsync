@@ -32,11 +32,22 @@ export default function NewJobPage() {
   const [jdText, setJdText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const pendingJobId = useRef<string | null>(null);
+  // Remembers the exact payload for a one-shot retry against Gemini when
+  // OpenRouter fails — see app/api/hr/jobs/stream/route.ts.
+  const lastPayload = useRef<Record<string, unknown> | null>(null);
+  const hasRetried = useRef(false);
 
   const { object, submit, isLoading } = useObject({
     api: "/api/hr/jobs/stream",
     schema: scenarioQuestionsSchema,
     onFinish: ({ object: finalObject, error: finishError }) => {
+      // OpenRouter's rate-limit surfaces here (stream completes with no
+      // valid object), not via onError — same one-shot Gemini retry.
+      if ((finishError || !finalObject) && !hasRetried.current && lastPayload.current) {
+        hasRetried.current = true;
+        submit({ ...lastPayload.current, fallback: true });
+        return;
+      }
       // The stream saves the job server-side once the object validates, so we
       // only navigate on a clean finish. Inputs are intentionally left intact
       // on failure so the user can just press the button again.
@@ -46,7 +57,14 @@ export default function NewJobPage() {
       }
       router.push(`/hr/dashboard/${pendingJobId.current}`);
     },
-    onError: (err) => setError(err.message),
+    onError: (err) => {
+      if (!hasRetried.current && lastPayload.current) {
+        hasRetried.current = true;
+        submit({ ...lastPayload.current, fallback: true });
+        return;
+      }
+      setError(err.message);
+    },
   });
 
   const elapsedSeconds = useElapsedSeconds(isLoading);
@@ -66,7 +84,10 @@ export default function NewJobPage() {
 
     const id = generateId();
     pendingJobId.current = id;
-    submit({ id, title, jd_text: jdText, locale });
+    hasRetried.current = false;
+    const payload = { id, title, jd_text: jdText, locale };
+    lastPayload.current = payload;
+    submit(payload);
   }
 
   const showPreview = isLoading || Boolean(object?.questions);

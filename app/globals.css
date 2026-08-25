@@ -104,3 +104,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* --- Candidate module (app/candidate/resume-builder) only --- */
+/* Thin, unobtrusive scrollbar for the CV preview column. */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d3e6ec;
+  border-radius: 999px;
+}
+
+.terminal-caret::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1.1em;
+  margin-left: 2px;
+  background: #7c5cfc;
+  vertical-align: text-bottom;
+  animation: candidate-blink 1s steps(2) infinite;
+}
+
+@keyframes candidate-blink {
+  50% {
+    opacity: 0;
+  }
+}
