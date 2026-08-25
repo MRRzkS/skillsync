@@ -1,0 +1,106 @@
+/*
+ * DESIGN TOKENS — Skillsync brand palette.
+ *
+ * Sourced from /public/logo.png (navy-to-violet infinity mark) and
+ * /public/brand.png (wordmark). Primary is the brand violet; navy is used
+ * for the wordmark/high-contrast text via --brand-navy, not as a token
+ * component uses directly. Components still consume colour via semantic
+ * names (bg-background, text-muted-foreground, border, …), never hardcoded
+ * hex, so a future re-skin only needs to change the values here.
+ *
+ *   --background / --foreground   page surface + default text
+ *   --card / --popover           raised surfaces (job cards, detail sheet)
+ *   --primary                    brand violet — main action (buttons, active nav item)
+ *   --secondary / --muted        subdued surfaces + secondary text
+ *   --accent                     hover/selected surface (violet tint)
+ *   --destructive                error surfaces
+ *   --border / --input / --ring  outlines and focus rings
+ *   --brand-navy / --brand-violet  raw logo hues, for the gradient wordmark/mark only
+ *   --radius                     0.625rem — the rounded-corner scale
+ *
+ * Status is never encoded in colour alone (no green=good / red=bad); badges
+ * use outline + an explicit text label so the meaning survives a re-skin.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 265 85% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 250 40% 96%;
+    --secondary-foreground: 222 47% 14%;
+
+    --muted: 250 30% 96%;
+    --muted-foreground: 222 15% 45%;
+
+    --accent: 262 60% 95%;
+    --accent-foreground: 265 60% 30%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 250 20% 90%;
+    --input: 250 20% 90%;
+    --ring: 265 85% 58%;
+
+    --brand-navy: 219 70% 15%;
+    --brand-violet: 265 85% 58%;
+
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 265 85% 65%;
+    --primary-foreground: 222 47% 9%;
+
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 222 20% 16%;
+    --muted-foreground: 220 10% 64%;
+
+    --accent: 265 40% 20%;
+    --accent-foreground: 265 60% 90%;
+
+    --destructive: 0 65% 65%;
+    --destructive-foreground: 222 47% 9%;
+
+    --border: 222 20% 22%;
+    --input: 222 20% 22%;
+    --ring: 265 85% 65%;
+
+    --brand-navy: 219 70% 60%;
+    --brand-violet: 265 85% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
