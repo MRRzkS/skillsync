@@ -25,5 +25,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Claude Code skill definitions (generic tooling, not app code)
-.agent/skills/
+# Claude Code local config/instructions (not app code)
+.agent/
+CLAUDE.md
