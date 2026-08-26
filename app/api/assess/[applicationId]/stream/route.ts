@@ -99,7 +99,7 @@ export async function POST(
         pitch_summary: object.pitch_summary,
       };
 
-      const { error: updateError, data: updated } = await supabase
+      const { error: updateError } = await supabase
         .from("applications")
         .update({
           match_score: Math.round(object.match_score),
@@ -111,8 +111,6 @@ export async function POST(
 
       if (updateError) {
         console.error("[assess/stream onFinish] Supabase update failed:", updateError);
-      } else {
-        console.log("[assess/stream onFinish] saved, rows updated:", updated?.length);
       }
     },
   });

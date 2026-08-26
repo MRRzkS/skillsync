@@ -11,11 +11,17 @@ create table if not exists candidate_profiles (
   -- someone still needs to build one. Nullable: the 3 pre-existing "Jordan
   -- Alvarez" rows (and any CV built before this column existed) predate
   -- candidate auth and simply have no owner.
-  user_id uuid references auth.users(id)
+  user_id uuid references auth.users(id),
+  -- Cached AI STAR-method CV review (lib/ai/cv-star-review.ts), computed once
+  -- right after save-cv persists the CV, not regenerated on every visit to
+  -- /candidate/cv-review. Null until the background review finishes (or if
+  -- it failed) — the review page falls back to generating on the spot then.
+  star_review jsonb
 );
 
--- Additive migration for an already-provisioned DB (run once):
+-- Additive migrations for an already-provisioned DB (run once):
 -- alter table candidate_profiles add column if not exists user_id uuid references auth.users(id);
+-- alter table candidate_profiles add column if not exists star_review jsonb;
 
 create table if not exists job_vacancies (
   id uuid primary key default gen_random_uuid(),

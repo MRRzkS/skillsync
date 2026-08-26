@@ -36,14 +36,13 @@ export default async function CandidateJobsPage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-cloud">
-      <div className="mx-auto max-w-4xl px-4 pb-16 pt-8 lg:px-8 lg:pt-12">
-        <JobsListClient
-          candidateId={candidate.id}
-          jobs={jobs ?? []}
-          applications={applications ?? []}
-        />
-      </div>
-    </main>
+    // The (app) layout already provides <main> and the page background.
+    <div className="mx-auto max-w-4xl px-4 pb-16 pt-8 lg:px-8">
+      <JobsListClient
+        candidateId={candidate.id}
+        jobs={jobs ?? []}
+        applications={applications ?? []}
+      />
+    </div>
   );
 }

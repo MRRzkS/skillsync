@@ -19,18 +19,28 @@ export default function AuthForm({
   defaultRole,
   allowRoleChoice = false,
   redirectTo,
+  role: controlledRole,
+  onRoleChange,
 }: {
   defaultRole: Role;
   /** Candidate's own login page pins the role; the shared /login lets you pick. */
   allowRoleChoice?: boolean;
   /** Where middleware wanted to send an HR user before it bounced them here. */
   redirectTo?: string;
+  /** Controlled role, so a parent (e.g. the shared /login page) can drive the
+   * side panel and the form's role toggle from the same piece of state. */
+  role?: Role;
+  onRoleChange?: (role: Role) => void;
 }) {
   const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>("signIn");
-  const [role, setRole] = useState<Role>(defaultRole);
+  const [uncontrolledRole, setUncontrolledRole] = useState<Role>(defaultRole);
+  const role = controlledRole ?? uncontrolledRole;
+  const setRole = onRoleChange ?? setUncontrolledRole;
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +53,12 @@ export default function AuthForm({
     event.preventDefault();
     setError(null);
     setInfo(null);
+
+    if (mode === "signUp" && password !== confirmPassword) {
+      setError(t("auth.passwordMismatch"));
+      return;
+    }
+
     setIsSubmitting(true);
 
     const supabase = createBrowserSupabaseClient();
@@ -52,6 +68,7 @@ export default function AuthForm({
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: fullName ? { data: { full_name: fullName } } : undefined,
         });
         if (signUpError) {
           setError(signUpError.message);
@@ -109,16 +126,19 @@ export default function AuthForm({
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">
+    <Card className="w-full max-w-sm border-none shadow-none">
+      <CardHeader className="px-0 pt-0">
+        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+          {role === "hr" ? t("auth.roleHr") : t("auth.roleCandidate")}
+        </p>
+        <CardTitle className="font-heading text-2xl">
           {role === "hr" ? t("auth.hrTitle") : t("auth.candidateTitle")}
         </CardTitle>
         <CardDescription>
           {mode === "signIn" ? t("auth.signInSubtitle") : t("auth.signUpSubtitle")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-5">
+      <CardContent className="space-y-5 px-0 pb-0">
         {allowRoleChoice && (
           <div className="space-y-2">
             <Label id="role-label">{t("auth.roleLabel")}</Label>
@@ -161,13 +181,29 @@ export default function AuthForm({
 
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground">{t("auth.or")}</span>
+          <span className="text-[10px] font-semibold tracking-wide text-muted-foreground">{t("auth.or")}</span>
           <Separator className="flex-1" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === "signUp" && (
+            <div className="space-y-2">
+              <Label htmlFor="fullName" className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("auth.fullName")}
+              </Label>
+              <Input
+                id="fullName"
+                autoComplete="name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                disabled={isSubmitting}
+              />
+            </div>
+          )}
           <div className="space-y-2">
-            <Label htmlFor="email">{t("auth.email")}</Label>
+            <Label htmlFor="email" className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("auth.email")}
+            </Label>
             <Input
               id="email"
               type="email"
@@ -179,7 +215,9 @@ export default function AuthForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">{t("auth.password")}</Label>
+            <Label htmlFor="password" className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("auth.password")}
+            </Label>
             <Input
               id="password"
               type="password"
@@ -191,6 +229,23 @@ export default function AuthForm({
               disabled={isSubmitting}
             />
           </div>
+          {mode === "signUp" ? (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("auth.confirmPassword")}
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={6}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isSubmitting}
+              />
+            </div>
+          ) : null}
 
           {error && (
             <p role="alert" className="rounded-md border border-border bg-muted px-3 py-2 text-sm">
@@ -219,6 +274,10 @@ export default function AuthForm({
         >
           {mode === "signIn" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
         </button>
+
+        <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+          {t("auth.termsNotice")}
+        </p>
       </CardContent>
     </Card>
   );

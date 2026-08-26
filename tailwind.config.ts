@@ -31,6 +31,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -63,12 +71,13 @@ const config: Config = {
         attention: "#C98A3B",
         attentionsoft: "#F5E9D8",
         line: "#D8D3C8",
+        // Aligned to the design handoff's ocean blue (was a teal placeholder).
         ocean: {
-          DEFAULT: "#1A5F7A",
-          50: "#EAF3F6",
-          100: "#D3E6EC",
-          600: "#1A5F7A",
-          700: "#154A5F",
+          DEFAULT: "#0D47A1",
+          50: "#E8F0FB",
+          100: "#C7DBF5",
+          600: "#0D47A1",
+          700: "#082B6B",
         },
         "sync-purple": {
           DEFAULT: "#7C5CFC",
@@ -88,6 +97,8 @@ const config: Config = {
         "text-gray": "#667085",
       },
       fontFamily: {
+        sans: ["var(--font-body)", "ui-sans-serif", "system-ui"],
+        heading: ["var(--font-heading)", "ui-sans-serif", "system-ui"],
         "candidate-mono": ["var(--candidate-font-mono)", "ui-monospace", "monospace"],
         "candidate-sans": ["var(--candidate-font-body)", "ui-sans-serif", "system-ui"],
         "candidate-heading": ["var(--candidate-font-heading)", "ui-sans-serif", "system-ui"],
@@ -122,6 +133,14 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.55" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "dash-flow": {
+          "0%": { backgroundPosition: "0 0" },
+          "100%": { backgroundPosition: "24px 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -129,6 +148,8 @@ const config: Config = {
         scan: "scan 1.4s ease-in-out infinite",
         "fade-up": "fade-up 0.35s ease-out both",
         "pulse-soft": "pulse-soft 1.6s ease-in-out infinite",
+        float: "float 4s ease-in-out infinite",
+        "dash-flow": "dash-flow 1.2s linear infinite",
       },
     },
   },

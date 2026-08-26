@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -98,6 +98,17 @@ export default function DashboardView({
   // t() already falls back to the key itself, so no extra guard is needed.
   const statusLabel = (status: string) => t(`dashboard.status.${status}`);
 
+  // The reference (design-handoff/UI_SkillSync/hr_dasbor-skor.png) leads with
+  // the best scorer. Computed rather than assuming applications[0] — the list
+  // can still hold unscored rows.
+  const topCandidate = applications.reduce<ApplicationWithCandidate | null>(
+    (best, app) =>
+      app.status === "completed" && (best === null || app.match_score > best.match_score)
+        ? app
+        : best,
+    null
+  );
+
   return (
     <div className="mx-auto w-full max-w-5xl space-y-6 p-6 md:p-10">
       <PageHeader
@@ -127,6 +138,24 @@ export default function DashboardView({
         }
       />
 
+      {topCandidate && (
+        <Card className="border-0 bg-gradient-to-r from-accent to-accent/30 p-6 text-center">
+          <Trophy className="mx-auto h-6 w-6 text-warning" aria-hidden />
+          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-accent-foreground">
+            {t("dashboard.topCandidate")}
+          </p>
+          <p className="mt-1 font-heading text-xl font-bold">
+            {topCandidate.candidate_profiles?.full_name ?? "—"}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("dashboard.topCandidateBody", {
+              job: jobTitle,
+              score: topCandidate.match_score,
+            })}
+          </p>
+        </Card>
+      )}
+
       {applications.length === 0 ? (
         <Card className="border-dashed p-10 text-center">
           <p className="font-medium">{t("dashboard.emptyTitle")}</p>
@@ -154,9 +183,21 @@ export default function DashboardView({
                     {application.candidate_profiles?.full_name ?? "—"}
                   </TableCell>
                   <TableCell className="tabular-nums">
-                    {application.status === "completed"
-                      ? application.match_score
-                      : t("dashboard.notScoredYet")}
+                    {application.status === "completed" ? (
+                      <span
+                        className={`font-heading font-semibold ${
+                          (application.match_score ?? 0) >= 85
+                            ? "text-success"
+                            : "text-warning"
+                        }`}
+                      >
+                        {application.match_score}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        {t("dashboard.notScoredYet")}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="font-normal">

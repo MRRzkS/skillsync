@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Textarea } from "@/components/candidate/ui/textarea";
 import { Label } from "@/components/candidate/ui/label";
 import { Button } from "@/components/candidate/ui/button";
+import { useTranslation } from "@/lib/i18n";
 import type { WizardData } from "@/components/candidate/wizard/types";
 import { Sparkles, Loader2, AlertTriangle } from "lucide-react";
 
+// Heading/subtitle live above the card now — see cv-wizard.tsx.
 export function StepProfile({
   data,
   onChange,
@@ -14,12 +16,13 @@ export function StepProfile({
   data: WizardData;
   onChange: (summary: string) => void;
 }) {
+  const { t } = useTranslation();
   const [isImproving, setIsImproving] = useState(false);
   const [improveError, setImproveError] = useState<string | null>(null);
 
   async function handleImproveWithAi() {
     if (data.summary.trim().length < 10) {
-      setImproveError("Write a sentence or two first, then AI can help polish it.");
+      setImproveError(t("candidate.form.improveNeedsText"));
       return;
     }
     setIsImproving(true);
@@ -38,11 +41,13 @@ export function StepProfile({
       });
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Couldn't improve the summary right now.");
+        throw new Error(json.error || t("candidate.form.improveFailed"));
       }
       onChange(json.summary);
     } catch (err) {
-      setImproveError(err instanceof Error ? err.message : "Unexpected error.");
+      setImproveError(
+        err instanceof Error ? err.message : t("candidate.form.unexpectedError")
+      );
     } finally {
       setIsImproving(false);
     }
@@ -50,23 +55,18 @@ export function StepProfile({
 
   return (
     <div>
-      <h2 className="font-candidate-heading text-xl font-bold text-text-dark">Your Professional Profile</h2>
-      <p className="mt-1.5 text-sm text-text-gray">
-        A short summary that appears right at the top of your CV.
-      </p>
-
-      <div className="mt-6">
+      <div>
         <div className="mb-1.5 flex items-center justify-between">
-          <Label htmlFor="summary">Professional Summary</Label>
-          <span className="text-xs text-text-gray">{data.summary.length} characters</span>
+          <Label htmlFor="summary">{t("candidate.form.summary")}</Label>
+          <span className="text-xs text-text-gray">
+            {t("candidate.form.summaryCount", { count: data.summary.length })}
+          </span>
         </div>
-        <p className="mb-2 text-xs text-text-gray">
-          Briefly describe your professional background, strengths, and career goals.
-        </p>
+        <p className="mb-2 text-xs text-text-gray">{t("candidate.form.summaryHint")}</p>
         <Textarea
           id="summary"
           className="min-h-[180px] resize-none text-sm leading-relaxed"
-          placeholder="Backend-leaning full stack engineer with 5 years building payments infrastructure..."
+          placeholder={t("candidate.form.summaryPlaceholder")}
           value={data.summary}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -82,11 +82,12 @@ export function StepProfile({
           >
             {isImproving ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Improving...
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
+                {t("candidate.form.improving")}
               </>
             ) : (
               <>
-                <Sparkles className="h-3.5 w-3.5" /> Improve with AI
+                <Sparkles className="h-3.5 w-3.5" /> {t("candidate.form.improve")}
               </>
             )}
           </Button>

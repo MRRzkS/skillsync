@@ -11,15 +11,38 @@
 # misc
 .DS_Store
 *.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# local env files
-.env*.local
+# local env files (every variant — .env, .env.local, .env.development.local,
+# .env.production.local, etc. — but NOT .env*.example, which is the template
+# checked into the repo on purpose)
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+!.env*.example
+
+# Vercel
+.vercel
+
+# editor/IDE local state
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# coverage / test artifacts
+/coverage
 
 # typescript
 *.tsbuildinfo
@@ -27,4 +50,27 @@ next-env.d.ts
 
 # Claude Code local config/instructions (not app code)
 .agent/
+.claude/
 CLAUDE.md
+
+# UI team's raw design reference (prototype HTML, PNG screenshots) — internal
+# working material, not something a public repo needs to ship. The actual
+# product code built from it (app/candidate/*, components/candidate/*,
+# lib/candidate/*) is real shipped code and stays tracked as normal.
+/design-handoff/
+
+# Dev/demo-only tooling — not part of the shipped product, kept locally only.
+# /hr/dev-tools already 404s in production (see its own guard), but the pages
+# themselves plus the two server actions they call are excluded here so a
+# public clone of the repo carries no trace of them. This does NOT touch
+# actions/create-application.ts, actions/submit-assessment.ts, or
+# actions/sign-out.ts — those three are real application code (apply flow,
+# assessment flow, logout) and stay tracked as normal.
+/app/hr/dev-tools/
+/actions/simulate-application.ts
+/actions/seed-ranking-demo.ts
+
+# CLI seed scripts — local developer tooling only, never invoked by the
+# running app. Not needed in the public repo; keep locally and run with
+# `npm run seed` / `npm run seed:ranking` as before.
+/scripts/

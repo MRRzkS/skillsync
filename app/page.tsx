@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
+import { LandingPage } from "@/components/marketing/landing-page";
 
-// The HR portal's single entry point. The Candidate module (ResumeForge) will
-// own its own routes once the two modules are merged.
+// Thin server entry — the page itself is a client component because every
+// string is translated and the locale lives in localStorage.
 export default function HomePage() {
-  redirect("/hr/jobs");
+  return <LandingPage />;
 }

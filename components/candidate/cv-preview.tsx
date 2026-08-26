@@ -3,7 +3,26 @@ import type { CvData } from "@/lib/candidate/cv-schema";
 import { normalizeUrl } from "@/lib/utils";
 import { AlertTriangle, Mail, Phone, MapPin, Link2, Globe } from "lucide-react";
 
-export function CvPreview({ cv, warnings }: { cv: CvData; warnings: string[] }) {
+export type CvTemplate = "classic" | "modern" | "minimal";
+
+// Three genuinely different accent treatments driven off the same data — not
+// three full layouts, but a real (not cosmetic-only) distinction so the
+// template picker on /candidate/cv-preview does something.
+const TEMPLATE_CARD_CLASS: Record<CvTemplate, string> = {
+  classic: "border-ocean-100/60",
+  modern: "border-ocean-100/60 border-l-4 border-l-sync-purple-600",
+  minimal: "border-ocean-100/60 border-t-4 border-t-amber-500",
+};
+
+export function CvPreview({
+  cv,
+  warnings,
+  template = "classic",
+}: {
+  cv: CvData;
+  warnings: string[];
+  template?: CvTemplate;
+}) {
   return (
     <div id="cv-document" className="flex flex-1 flex-col gap-5 animate-fade-up">
       {warnings.length > 0 && (
@@ -18,7 +37,9 @@ export function CvPreview({ cv, warnings }: { cv: CvData; warnings: string[] }) 
       )}
 
       {/* Document card */}
-      <div className="rounded-2xl border border-ocean-100/60 bg-white p-6 shadow-card-lg lg:p-8">
+      <div
+        className={`rounded-2xl border bg-white p-6 shadow-card-lg lg:p-8 ${TEMPLATE_CARD_CLASS[template]}`}
+      >
         {/* Identity block */}
         <div>
           <h1 className="font-candidate-heading text-2xl font-bold text-text-dark">

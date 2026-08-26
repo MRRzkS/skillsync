@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Briefcase, Loader2, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/candidate/ui/button";
 import { Badge } from "@/components/candidate/ui/badge";
+import { useTranslation } from "@/lib/i18n";
 
 type Job = {
   id: string;
@@ -20,10 +21,10 @@ type Application = {
   match_score: number;
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: "Not started",
-  in_progress: "In progress",
-  completed: "Completed",
+const STATUS_KEY: Record<string, string> = {
+  pending: "candidate.jobs.statusPending",
+  in_progress: "candidate.jobs.statusInProgress",
+  completed: "candidate.jobs.statusCompleted",
 };
 
 function excerpt(text: string, max = 160) {
@@ -41,6 +42,7 @@ export default function JobsListClient({
   applications: Application[];
 }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,11 +59,11 @@ export default function JobsListClient({
       });
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Couldn't submit your application. Try again.");
+        throw new Error(json.error || t("candidate.jobs.errorApply"));
       }
       router.push(`/assess/${json.applicationId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unexpected error.");
+      setError(err instanceof Error ? err.message : t("candidate.jobs.errorUnexpected"));
       setApplyingJobId(null);
     }
   }
@@ -72,11 +74,12 @@ export default function JobsListClient({
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-ocean-600 to-sync-purple-600">
           <Briefcase className="h-[18px] w-[18px] text-white" />
         </div>
-        <h1 className="font-candidate-heading text-xl font-bold text-text-dark">Open Roles</h1>
+        <h1 className="font-candidate-heading text-xl font-bold text-text-dark">
+          {t("candidate.jobs.title")}
+        </h1>
       </div>
       <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-gray">
-        Pick a role and we&apos;ll walk you through a quick 3-question verification test using
-        the CV you just built.
+        {t("candidate.jobs.subtitle")}
       </p>
 
       {error && (
@@ -89,10 +92,10 @@ export default function JobsListClient({
       {jobs.length === 0 ? (
         <div className="mt-8 flex flex-col items-center gap-2 rounded-2xl border border-dashed border-ocean-100 bg-white px-6 py-16 text-center">
           <Briefcase className="h-6 w-6 text-ocean-600" />
-          <p className="text-sm font-medium text-text-dark">No open roles right now</p>
-          <p className="max-w-xs text-sm text-text-gray">
-            Check back later — HR posts new roles regularly.
+          <p className="text-sm font-medium text-text-dark">
+            {t("candidate.jobs.emptyTitle")}
           </p>
+          <p className="max-w-xs text-sm text-text-gray">{t("candidate.jobs.emptyBody")}</p>
         </div>
       ) : (
         <ul className="mt-8 space-y-4">
@@ -121,7 +124,9 @@ export default function JobsListClient({
                         {application.status === "completed" && (
                           <CheckCircle2 className="mr-1 h-3 w-3" />
                         )}
-                        {STATUS_LABEL[application.status] ?? application.status}
+                        {STATUS_KEY[application.status]
+                          ? t(STATUS_KEY[application.status])
+                          : application.status}
                         {application.status === "completed" &&
                           ` · ${application.match_score}/100`}
                       </Badge>
@@ -131,7 +136,9 @@ export default function JobsListClient({
                         className="gap-2"
                         onClick={() => router.push(`/assess/${application.id}`)}
                       >
-                        {application.status === "completed" ? "View" : "Continue"}
+                        {application.status === "completed"
+                          ? t("candidate.jobs.view")
+                          : t("candidate.jobs.continue")}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -145,11 +152,12 @@ export default function JobsListClient({
                     >
                       {isApplying ? (
                         <>
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> Applying...
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
+                          {t("candidate.jobs.applying")}
                         </>
                       ) : (
                         <>
-                          Apply <ArrowRight className="h-3.5 w-3.5" />
+                          {t("candidate.jobs.apply")} <ArrowRight className="h-3.5 w-3.5" />
                         </>
                       )}
                     </Button>

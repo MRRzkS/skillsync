@@ -1,0 +1,137 @@
+"use client";
+
+import Link from "next/link";
+import { AlertTriangle, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { Button } from "@/components/candidate/ui/button";
+import { Badge } from "@/components/candidate/ui/badge";
+import { useTranslation } from "@/lib/i18n";
+import type { StarReview } from "@/lib/ai/cv-star-review";
+
+// Client half of /candidate/cv-review — the page stays a thin server component
+// that runs the AI review, this renders it. Split for the usual reason in this
+// app: locale lives in localStorage, so translated text has to be client-side.
+export function CvReviewView({
+  review,
+  reviewError,
+}: {
+  review: StarReview | null;
+  reviewError: string | null;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 pb-16 pt-8 lg:px-8">
+      <div className="flex items-center gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-ocean-600 to-sync-purple-600">
+          <Sparkles className="h-[18px] w-[18px] text-white" />
+        </div>
+        <h1 className="font-candidate-heading text-xl font-bold text-text-dark">
+          {t("candidate.review.title")}
+        </h1>
+      </div>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-gray">
+        {t("candidate.review.subtitle")}
+      </p>
+
+      {reviewError ? (
+        <div className="mt-8 flex flex-col items-center gap-2 rounded-2xl border border-dashed border-red-200 bg-white px-6 py-12 text-center">
+          <AlertTriangle className="h-6 w-6 text-red-500" />
+          <p className="text-sm font-medium text-text-dark">
+            {t("candidate.review.errorTitle")}
+          </p>
+          <p className="max-w-xs text-sm text-text-gray">{reviewError}</p>
+          <Button variant="outline-soft" size="sm" className="mt-2" asChild>
+            <Link href="/candidate/cv-review">{t("common.retry")}</Link>
+          </Button>
+        </div>
+      ) : review ? (
+        <div className="mt-8 space-y-6">
+          <div className="rounded-2xl border border-ocean-100/60 bg-white p-6 shadow-card">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm font-semibold text-text-dark">
+                {t("candidate.review.overall")}
+              </p>
+              <Badge variant={review.overall_score >= 70 ? "mint" : "ocean"}>
+                {review.overall_score}/100
+              </Badge>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-text-gray">
+              {review.overall_feedback}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-ocean-100/60 bg-white p-5 shadow-card">
+              <p className="text-xs font-semibold uppercase tracking-wide text-ocean-700">
+                {t("candidate.review.strengths")}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {review.strengths.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-text-dark">
+                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-mint-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-ocean-100/60 bg-white p-5 shadow-card">
+              <p className="text-xs font-semibold uppercase tracking-wide text-sync-purple-600">
+                {t("candidate.review.opportunities")}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {review.weaknesses.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-text-dark">
+                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sync-purple-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {review.bullet_feedback.length > 0 && (
+            <div className="rounded-2xl border border-ocean-100/60 bg-white p-6 shadow-card">
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-gray">
+                {t("candidate.review.bulletCheck")}
+              </p>
+              <div className="mt-4 space-y-4">
+                {review.bullet_feedback.map((item, i) => (
+                  <div
+                    key={i}
+                    className="border-t border-ocean-100/70 pt-4 first:border-t-0 first:pt-0"
+                  >
+                    <p className="text-xs font-medium text-text-gray">{item.role}</p>
+                    <p className="mt-1 text-sm text-text-dark">&ldquo;{item.bullet}&rdquo;</p>
+                    <div className="mt-2 flex items-start gap-2">
+                      <Badge variant={item.follows_star ? "mint" : "outline-soft"}>
+                        {item.follows_star
+                          ? t("candidate.review.followsStar")
+                          : t("candidate.review.needsWork")}
+                      </Badge>
+                    </div>
+                    {item.suggestion && (
+                      <p className="mt-2 text-sm leading-relaxed text-text-gray">
+                        {item.suggestion}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-ocean-100/70 pt-6">
+        <Button variant="ai" asChild className="gap-2">
+          <Link href="/candidate/jobs">
+            {t("candidate.review.continueToJobs")} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+        <Button variant="outline-soft" asChild>
+          <Link href="/candidate/resume-builder">{t("candidate.review.editCv")}</Link>
+        </Button>
+      </div>
+    </div>
+  );
+}

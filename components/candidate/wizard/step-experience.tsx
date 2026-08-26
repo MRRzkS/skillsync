@@ -8,6 +8,7 @@ import {
   emptyExperience,
   type WizardExperience,
 } from "@/components/candidate/wizard/types";
+import { useTranslation } from "@/lib/i18n";
 import { Plus, Trash2, Briefcase } from "lucide-react";
 
 export function StepExperience({
@@ -21,6 +22,8 @@ export function StepExperience({
   onChangeExperience: (next: WizardExperience[]) => void;
   onChangeNoExperience: (value: boolean) => void;
 }) {
+  const { t } = useTranslation();
+
   function updateEntry(id: string, patch: Partial<WizardExperience>) {
     onChangeExperience(experience.map((e) => (e.id === id ? { ...e, ...patch } : e)));
   }
@@ -56,12 +59,9 @@ export function StepExperience({
 
   return (
     <div>
-      <h2 className="font-candidate-heading text-xl font-bold text-text-dark">Your Work Experience</h2>
-      <p className="mt-1.5 text-sm text-text-gray">
-        Add each role you&apos;ve held. You can reorder or remove them any time.
-      </p>
+      {/* Heading/subtitle live above the card now — see cv-wizard.tsx. */}
 
-      <label className="mt-5 flex items-center gap-2.5 rounded-lg border border-ocean-100 bg-ocean-50/40 px-3.5 py-3 text-sm text-text-dark">
+      <label className="flex items-center gap-2.5 rounded-lg border border-ocean-100 bg-ocean-50/40 px-3.5 py-3 text-sm text-text-dark">
         <Checkbox
           checked={noExperience}
           onCheckedChange={(checked) => {
@@ -69,7 +69,7 @@ export function StepExperience({
             if (checked) onChangeExperience([]);
           }}
         />
-        I don&apos;t have work experience yet
+        {t("candidate.form.noExperience")}
       </label>
 
       {!noExperience && (
@@ -82,61 +82,63 @@ export function StepExperience({
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold text-text-dark">
                   <Briefcase className="h-4 w-4 text-ocean-600" />
-                  Experience {idx + 1}
+                  {t("candidate.form.experienceEntry", { number: idx + 1 })}
                 </div>
                 <button
                   type="button"
                   onClick={() => removeEntry(exp.id)}
                   className="flex items-center gap-1 text-xs font-medium text-red-500 hover:text-red-600"
                 >
-                  <Trash2 className="h-3.5 w-3.5" /> Delete
+                  <Trash2 className="h-3.5 w-3.5" /> {t("candidate.form.delete")}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <Label>Job Title</Label>
+                  <Label>{t("candidate.form.jobTitle")}</Label>
                   <Input
                     className="mt-1.5"
-                    placeholder="Senior Software Engineer"
+                    placeholder={t("candidate.form.jobTitlePlaceholder")}
                     value={exp.role}
                     onChange={(e) => updateEntry(exp.id, { role: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label>Company Name</Label>
+                  <Label>{t("candidate.form.company")}</Label>
                   <Input
                     className="mt-1.5"
-                    placeholder="Northwind Labs"
+                    placeholder={t("candidate.form.companyPlaceholder")}
                     value={exp.company}
                     onChange={(e) => updateEntry(exp.id, { company: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label>Location (optional)</Label>
+                  <Label>{t("candidate.form.workLocation")}</Label>
                   <Input
                     className="mt-1.5"
-                    placeholder="Austin, TX"
+                    placeholder={t("candidate.form.locationPlaceholder")}
                     value={exp.location}
                     onChange={(e) => updateEntry(exp.id, { location: e.target.value })}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label>Start Date</Label>
+                    <Label>{t("candidate.form.startDate")}</Label>
                     <Input
                       className="mt-1.5"
-                      placeholder="Mar 2022"
+                      placeholder={t("candidate.form.startDatePlaceholder")}
                       value={exp.startDate}
                       onChange={(e) => updateEntry(exp.id, { startDate: e.target.value })}
                     />
                   </div>
                   <div>
-                    <Label>End Date</Label>
+                    <Label>{t("candidate.form.endDate")}</Label>
                     <Input
                       className="mt-1.5"
-                      placeholder="Present"
-                      value={exp.current ? "Present" : exp.endDate}
+                      placeholder={t("candidate.form.present")}
+                      // Display only — the stored value stays the English
+                      // "Present", since it's written into the CV itself.
+                      value={exp.current ? t("candidate.form.present") : exp.endDate}
                       disabled={exp.current}
                       onChange={(e) => updateEntry(exp.id, { endDate: e.target.value })}
                     />
@@ -151,16 +153,18 @@ export function StepExperience({
                     updateEntry(exp.id, { current: checked, endDate: checked ? "Present" : "" })
                   }
                 />
-                I currently work here
+                {t("candidate.form.currentlyWorkHere")}
               </label>
 
               <div className="mt-4">
-                <Label>Achievements</Label>
+                <Label>{t("candidate.form.achievements")}</Label>
                 <div className="mt-1.5 space-y-2">
                   {exp.bullets.map((bullet, bIdx) => (
                     <div key={bIdx} className="flex items-center gap-2">
                       <Input
-                        placeholder={`Achievement ${bIdx + 1}`}
+                        placeholder={t("candidate.form.achievementPlaceholder", {
+                          number: bIdx + 1,
+                        })}
                         value={bullet}
                         onChange={(e) => updateBullet(exp.id, bIdx, e.target.value)}
                       />
@@ -169,7 +173,7 @@ export function StepExperience({
                           type="button"
                           onClick={() => removeBullet(exp.id, bIdx)}
                           className="shrink-0 text-text-gray hover:text-red-500"
-                          aria-label="Remove achievement"
+                          aria-label={t("candidate.form.removeAchievement")}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -182,14 +186,14 @@ export function StepExperience({
                   onClick={() => addBullet(exp.id)}
                   className="mt-2 flex items-center gap-1 text-xs font-medium text-sync-purple-600 hover:text-sync-purple-700"
                 >
-                  <Plus className="h-3.5 w-3.5" /> Add another achievement
+                  <Plus className="h-3.5 w-3.5" /> {t("candidate.form.addAchievement")}
                 </button>
               </div>
             </div>
           ))}
 
           <Button type="button" variant="outline-soft" onClick={addEntry} className="gap-2">
-            <Plus className="h-4 w-4" /> Add Work Experience
+            <Plus className="h-4 w-4" /> {t("candidate.form.addExperience")}
           </Button>
         </div>
       )}
