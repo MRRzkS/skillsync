@@ -75,10 +75,10 @@ const config: Config = {
         // #1A5F7A, Sync Purple #7C5CFC, Mint #A6E4D4, Cloud White #F6F9F6).
         // A prior pass here mistakenly used #0D47A1 for "ocean" — that hex is
         // actually the file prototype's --purple/--ocean-deep navy, not the
-        // team's real ocean teal; #0D47A1 is still correct where it's used
-        // for the navy→purple/navy→amber gradients elsewhere (cv-wizard.tsx,
-        // profile-view.tsx, opengraph-image.tsx), which intentionally use the
-        // deeper navy as one gradient stop, not this token.
+        // team's real ocean teal. The decorative navy→ocean→amber and
+        // navy→purple gradients elsewhere (cv-wizard.tsx, profile-view.tsx,
+        // opengraph-image.tsx) also used #0D47A1 for the same reason and have
+        // been corrected to #1A5F7A to match.
         ocean: {
           DEFAULT: "#1A5F7A",
           50: "#EAF3F5",
