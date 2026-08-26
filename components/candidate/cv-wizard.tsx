@@ -334,11 +334,12 @@ export function CvWizard({ initialCv = null }: { initialCv?: CvData | null }) {
 
   return (
     <div>
-      {/* Hero banner — navy→amber gradient, per the UI team's reference. */}
+      {/* Hero banner — navy→ocean→purple gradient, using only palette colors
+          (the design reference's orange isn't in the official palette card). */}
       <div
         className="rounded-2xl px-6 py-7 text-white shadow-card lg:px-8"
         style={{
-          backgroundImage: "linear-gradient(105deg, #172033 0%, #1A5F7A 45%, #E07B00 100%)",
+          backgroundImage: "linear-gradient(105deg, #172033 0%, #1A5F7A 45%, #7C5CFC 100%)",
         }}
       >
         <h1 className="flex items-center gap-2 font-candidate-heading text-2xl font-bold">

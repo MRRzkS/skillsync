@@ -81,7 +81,7 @@ export function CandidateProfileView({ cv }: { cv: CvData }) {
         className="rounded-2xl px-6 py-8 text-white lg:px-8"
         style={{ backgroundImage: "linear-gradient(120deg, #172033 0%, #1A5F7A 130%)" }}
       >
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl font-candidate-heading text-2xl font-bold text-text-dark bg-[#F57C00]">
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl font-candidate-heading text-2xl font-bold text-text-dark bg-mint-600">
           {initials(name)}
         </div>
         <h1 className="mt-5 font-candidate-heading text-3xl font-bold">{name}</h1>
@@ -234,7 +234,7 @@ function TimelineDot() {
   return (
     <span
       aria-hidden
-      className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#F57C00]"
+      className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-sync-purple-600"
     />
   );
 }
