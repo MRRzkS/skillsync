@@ -30,7 +30,7 @@ export function AuthSidePanel({ role }: { role: "hr" | "candidate" }) {
       />
       <div
         className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full opacity-30 blur-3xl"
-        style={{ background: "hsl(var(--warning))" }}
+        style={{ background: "hsl(var(--brand-accent-purple))" }}
       />
 
       <Link

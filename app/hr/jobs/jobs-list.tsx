@@ -66,7 +66,7 @@ export default function JobsList({ jobs }: { jobs: JobSummary[] }) {
         className="rounded-2xl px-6 py-7 text-white lg:px-8"
         style={{
           backgroundImage:
-            "linear-gradient(105deg, hsl(var(--brand-navy)) 0%, hsl(var(--primary)) 45%, hsl(var(--warning)) 100%)",
+            "linear-gradient(105deg, hsl(var(--brand-navy)) 0%, hsl(var(--primary)) 45%, hsl(var(--brand-accent-purple)) 100%)",
         }}
       >
         <h2 className="font-heading text-2xl font-bold">
