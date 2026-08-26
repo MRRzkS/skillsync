@@ -372,12 +372,9 @@
     "signOut": "Log out",
     "cvPreview": {
       "title": "CV Preview",
-      "subtitle": "This is how your CV will look. Pick a template, then download it as a PDF whenever you like.",
+      "subtitle": "This is how your CV will look. Download it as a PDF whenever you like.",
       "download": "Download PDF",
-      "edit": "Edit again",
-      "templateClassic": "Classic",
-      "templateModern": "Modern",
-      "templateMinimal": "Minimal"
+      "edit": "Edit again"
     },
     "steps": {
       "personal": "Personal Data",

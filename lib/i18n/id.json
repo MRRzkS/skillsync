@@ -372,12 +372,9 @@
     "signOut": "Keluar",
     "cvPreview": {
       "title": "Pratinjau CV",
-      "subtitle": "Beginilah CV kamu akan terlihat. Pilih template, lalu unduh sebagai PDF kapan saja.",
+      "subtitle": "Beginilah CV kamu akan terlihat. Unduh sebagai PDF kapan saja.",
       "download": "Unduh PDF",
-      "edit": "Edit lagi",
-      "templateClassic": "Klasik",
-      "templateModern": "Modern",
-      "templateMinimal": "Minimalis"
+      "edit": "Edit lagi"
     },
     "steps": {
       "personal": "Data Diri",
