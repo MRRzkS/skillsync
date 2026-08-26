@@ -54,8 +54,9 @@ export function StepIndicator({
                       ? "bg-mint-600 text-white"
                       : "bg-white text-text-gray"
                   )}
-                  // Amber marks "you are here", per the UI team's reference.
-                  style={isCurrent ? { backgroundColor: "#F57C00" } : undefined}
+                  // Sync Purple marks "you are here" — the design reference
+                  // used orange here, which isn't in the official palette.
+                  style={isCurrent ? { backgroundColor: "#7C5CFC" } : undefined}
                 >
                   {isDone ? <Check className="h-3 w-3" strokeWidth={3} /> : i + 1}
                 </span>
