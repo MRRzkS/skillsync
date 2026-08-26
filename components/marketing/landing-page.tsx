@@ -158,11 +158,13 @@ function Hero() {
     <section
       className="relative overflow-hidden py-16 md:py-24"
       style={{
-        // Matches the UI team's reference exactly (design-handoff/
-        // SkillSync_revisi.html, .hero rule) — four stacked radial glows
-        // (ocean blue top-right, amber bottom-left, two faint blue accents)
-        // over a near-white base gradient. Values ported as-is, with two
-        // fixes the prototype's static canvas never had to deal with:
+        // Layout ported from the design reference (design-handoff/
+        // SkillSync_revisi.html, .hero rule) — four stacked radial glows over
+        // a near-white base — but recolored to the official 4-color palette
+        // (Ocean Blue, Sync Purple, Mint, Cloud White): the reference's
+        // bottom-left glow was amber (rgba(255,204,128)), which isn't in that
+        // palette, so it's Sync Purple here instead. Two fixes the
+        // prototype's static canvas never had to deal with:
         // - each radial fades to a transparent version of ITS OWN colour
         //   (not the bare `transparent` keyword, which is transparent
         //   *black* — interpolating a solid colour into that produces a
@@ -172,11 +174,11 @@ function Hero() {
         //   exceed a radial's box, which would otherwise tile it and show
         //   as a hard seam.
         backgroundImage: [
-          "radial-gradient(760px 480px at 85% 4%, rgba(13,71,161,.24), rgba(13,71,161,0) 60%)",
-          "radial-gradient(600px 460px at 4% 92%, rgba(255,204,128,.46), rgba(255,204,128,0) 60%)",
-          "radial-gradient(480px 380px at 42% -6%, rgba(13,71,161,.14), rgba(13,71,161,0) 65%)",
-          "radial-gradient(360px 320px at 60% 40%, rgba(21,101,192,.10), rgba(21,101,192,0) 70%)",
-          "linear-gradient(165deg, #fff 0%, #fcfbff 45%, #f8fcfb 100%)",
+          "radial-gradient(760px 480px at 85% 4%, rgba(26,95,122,.24), rgba(26,95,122,0) 60%)",
+          "radial-gradient(600px 460px at 4% 92%, rgba(124,92,252,.20), rgba(124,92,252,0) 60%)",
+          "radial-gradient(480px 380px at 42% -6%, rgba(26,95,122,.14), rgba(26,95,122,0) 65%)",
+          "radial-gradient(360px 320px at 60% 40%, rgba(166,228,212,.35), rgba(166,228,212,0) 70%)",
+          "linear-gradient(165deg, #fff 0%, #fcfdfc 45%, #F6F9F6 100%)",
         ].join(", "),
         backgroundRepeat: "no-repeat",
       }}
@@ -188,7 +190,7 @@ function Hero() {
         className="pointer-events-none absolute inset-0 opacity-50"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(13,71,161,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(13,71,161,.05) 1px, transparent 1px)",
+            "linear-gradient(rgba(26,95,122,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(26,95,122,.05) 1px, transparent 1px)",
           backgroundSize: "46px 46px",
           maskImage: "radial-gradient(circle at 78% 10%, #000, transparent 62%)",
           WebkitMaskImage: "radial-gradient(circle at 78% 10%, #000, transparent 62%)",

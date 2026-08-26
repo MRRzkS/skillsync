@@ -53,7 +53,7 @@ export function CvPreviewView({ cv }: { cv: CvData }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl px-4 pb-16 pt-8 lg:px-8">
       <h1 className="font-candidate-heading text-3xl font-bold text-text-dark">
         {t("candidate.cvPreview.title")}
       </h1>

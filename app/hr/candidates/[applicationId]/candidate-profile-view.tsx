@@ -87,12 +87,12 @@ export default function CandidateProfileView({
       >
         <div
           className="flex h-20 w-20 items-center justify-center rounded-2xl font-heading text-2xl font-bold"
-          style={{ backgroundColor: "hsl(var(--warning))" }}
+          style={{ backgroundColor: "hsl(var(--success))" }}
         >
           {initials(name)}
         </div>
         <h1 className="mt-5 font-heading text-3xl font-bold tracking-tight">{name}</h1>
-        <p className="mt-1 text-sm font-medium" style={{ color: "hsl(var(--warning))" }}>
+        <p className="mt-1 text-sm font-medium" style={{ color: "hsl(var(--brand-accent-purple))" }}>
           {t("candidates.appliedFor", { job: jobTitle })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/80">
@@ -234,7 +234,7 @@ function TimelineDot() {
     <span
       aria-hidden
       className="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-background"
-      style={{ backgroundColor: "hsl(var(--warning))" }}
+      style={{ backgroundColor: "hsl(var(--brand-accent-purple))" }}
     />
   );
 }
