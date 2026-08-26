@@ -16,7 +16,7 @@ export function StepProfile({
   data: WizardData;
   onChange: (summary: string) => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [isImproving, setIsImproving] = useState(false);
   const [improveError, setImproveError] = useState<string | null>(null);
 
@@ -33,6 +33,7 @@ export function StepProfile({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           summary: data.summary,
+          locale,
           context: {
             title: data.personal.desiredTitle,
             topSkills: data.skills.slice(0, 8),
