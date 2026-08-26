@@ -79,7 +79,7 @@ export function CandidateProfileView({ cv }: { cv: CvData }) {
     <div className="mx-auto max-w-4xl px-4 pb-16 pt-8 lg:px-8">
       <div
         className="rounded-2xl px-6 py-8 text-white lg:px-8"
-        style={{ backgroundImage: "linear-gradient(120deg, #172033 0%, #0D47A1 130%)" }}
+        style={{ backgroundImage: "linear-gradient(120deg, #172033 0%, #1A5F7A 130%)" }}
       >
         <div className="flex h-20 w-20 items-center justify-center rounded-2xl font-candidate-heading text-2xl font-bold text-text-dark bg-[#F57C00]">
           {initials(name)}
