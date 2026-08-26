@@ -93,94 +93,100 @@ export default function NewJobPage() {
   const showPreview = isLoading || Boolean(object?.questions);
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6 p-6 md:p-10">
-      <PageHeader title={t("newJob.title")} subtitle={t("newJob.subtitle")} />
+    <div className="mx-auto w-full max-w-5xl space-y-6 p-6 md:p-10">
+      <PageHeader eyebrow={t("newJob.eyebrow")} title={t("newJob.title")} subtitle={t("newJob.subtitle")} />
 
-      <Card className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="title">{t("newJob.jobTitleLabel")}</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              disabled={isLoading}
-              placeholder={t("newJob.jobTitlePlaceholder")}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between gap-4">
-              <Label htmlFor="jd_text">{t("newJob.jdLabel")}</Label>
-              <EnhanceJdButton
-                title={title}
-                jdText={jdText}
-                onEnhanced={setJdText}
+      {/* Two columns on desktop — form left, generated questions right — to
+          match the reference (hr_buat-lowongan.png). The right column only
+          renders once there's something to show, so it doesn't leave an
+          empty panel staring back before the first submit. */}
+      <div className={`grid grid-cols-1 gap-6 ${showPreview ? "lg:grid-cols-2" : ""}`}>
+        <Card className="h-fit p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="title">{t("newJob.jobTitleLabel")}</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 disabled={isLoading}
+                placeholder={t("newJob.jobTitlePlaceholder")}
               />
             </div>
-            <Textarea
-              id="jd_text"
-              value={jdText}
-              onChange={(e) => setJdText(e.target.value)}
-              disabled={isLoading}
-              rows={10}
-              placeholder={t("newJob.jdPlaceholder")}
-            />
-            <p className="text-xs text-muted-foreground">
-              {t("newJob.enhanceHint")}
-            </p>
-          </div>
 
-          {error && (
-            <p
-              role="alert"
-              className="rounded-md border border-border bg-muted px-3 py-2 text-sm"
-            >
-              {error}
-            </p>
-          )}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-4">
+                <Label htmlFor="jd_text">{t("newJob.jdLabel")}</Label>
+                <EnhanceJdButton
+                  title={title}
+                  jdText={jdText}
+                  onEnhanced={setJdText}
+                  disabled={isLoading}
+                />
+              </div>
+              <Textarea
+                id="jd_text"
+                value={jdText}
+                onChange={(e) => setJdText(e.target.value)}
+                disabled={isLoading}
+                rows={10}
+                placeholder={t("newJob.jdPlaceholder")}
+              />
+              <p className="text-xs text-muted-foreground">
+                {t("newJob.enhanceHint")}
+              </p>
+            </div>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading
-              ? t("newJob.submitting", { seconds: elapsedSeconds })
-              : t("newJob.submit")}
-          </Button>
-        </form>
-      </Card>
+            {error && (
+              <p
+                role="alert"
+                className="rounded-md border border-border bg-muted px-3 py-2 text-sm"
+              >
+                {error}
+              </p>
+            )}
 
-      {showPreview && (
-        <section className="space-y-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {t("newJob.generatedTitle")}
-          </h2>
-          <div className="space-y-3">
-            {[0, 1, 2].map((index) => {
-              const question = object?.questions?.[index];
-              return (
-                <Card key={index} className="p-4">
-                  {question?.question ? (
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground">
-                        {question.focus_area ?? ""}
-                      </p>
-                      <p className="text-sm">{question.question}</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground">
-                        {t("newJob.generatingQuestion", { number: index + 1 })}
-                      </p>
-                      <Skeleton className="h-3 w-full" />
-                      <Skeleton className="h-3 w-4/5" />
-                    </div>
-                  )}
-                </Card>
-              );
-            })}
-          </div>
-        </section>
-      )}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading
+                ? t("newJob.submitting", { seconds: elapsedSeconds })
+                : t("newJob.submit")}
+            </Button>
+          </form>
+        </Card>
+
+        {showPreview && (
+          <section className="space-y-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("newJob.generatedTitle")}
+            </h2>
+            <div className="space-y-3">
+              {[0, 1, 2].map((index) => {
+                const question = object?.questions?.[index];
+                return (
+                  <Card key={index} className="p-4">
+                    {question?.question ? (
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground">
+                          {question.focus_area ?? ""}
+                        </p>
+                        <p className="text-sm">{question.question}</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-xs text-muted-foreground">
+                          {t("newJob.generatingQuestion", { number: index + 1 })}
+                        </p>
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-4/5" />
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

@@ -60,7 +60,28 @@ export default function JobsList({ jobs }: { jobs: JobSummary[] }) {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 p-6 md:p-10">
+      {/* Welcome banner from the reference (hr_daftar-lowongan.png). Counts are
+          derived from the jobs already on screen — no extra query. */}
+      <div
+        className="rounded-2xl px-6 py-7 text-white lg:px-8"
+        style={{
+          backgroundImage:
+            "linear-gradient(105deg, hsl(var(--brand-navy)) 0%, hsl(var(--primary)) 45%, hsl(var(--warning)) 100%)",
+        }}
+      >
+        <h2 className="font-heading text-2xl font-bold">
+          {t("jobs.welcomeTitle")} <span aria-hidden>👋</span>
+        </h2>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/85">
+          {t("jobs.welcomeBody", {
+            jobs: jobs.length,
+            candidates: jobs.reduce((sum, job) => sum + job.candidateCount, 0),
+          })}
+        </p>
+      </div>
+
       <PageHeader
+        eyebrow={t("jobs.eyebrow")}
         title={t("jobs.title")}
         subtitle={t("jobs.subtitle")}
         action={

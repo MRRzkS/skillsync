@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Label } from "@/components/candidate/ui/label";
+import { useTranslation } from "@/lib/i18n";
 import { X } from "lucide-react";
 
 function TagInput({
@@ -15,6 +16,7 @@ function TagInput({
   placeholder: string;
   accent?: "ocean" | "purple";
 }) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState("");
   const [dupeWarning, setDupeWarning] = useState(false);
 
@@ -53,7 +55,7 @@ function TagInput({
             <button
               type="button"
               onClick={() => remove(i)}
-              aria-label={`Remove ${v}`}
+              aria-label={t("candidate.form.removeItem", { item: v })}
               className="rounded-full hover:opacity-70"
             >
               <X className="h-3 w-3" />
@@ -73,12 +75,12 @@ function TagInput({
             }
           }}
           onBlur={commit}
-          placeholder={values.length === 0 ? placeholder : "Add another..."}
+          placeholder={values.length === 0 ? placeholder : t("candidate.form.addAnother")}
           className="min-w-[120px] flex-1 border-none bg-transparent text-sm text-text-dark outline-none placeholder:text-text-gray/60"
         />
       </div>
       {dupeWarning && (
-        <p className="mt-1 text-xs text-amber-600">That one&apos;s already on the list.</p>
+        <p className="mt-1 text-xs text-amber-600">{t("candidate.form.duplicate")}</p>
       )}
     </div>
   );
@@ -95,39 +97,35 @@ export function StepSkills({
   onChangeSkills: (next: string[]) => void;
   onChangeLanguages: (next: string[]) => void;
 }) {
+  const { t } = useTranslation();
+
+  // Heading/subtitle live above the card now — see cv-wizard.tsx.
   return (
-    <div>
-      <h2 className="font-candidate-heading text-xl font-bold text-text-dark">Show your skills</h2>
-      <p className="mt-1.5 text-sm text-text-gray">
-        Add skills that best represent your professional abilities.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <Label>{t("candidate.form.skills")}</Label>
+        <p className="mb-1.5 mt-0.5 text-xs text-text-gray">
+          {t("candidate.form.skillsHint")}
+        </p>
+        <TagInput
+          values={skills}
+          onChange={onChangeSkills}
+          placeholder={t("candidate.form.skillsPlaceholder")}
+          accent="ocean"
+        />
+      </div>
 
-      <div className="mt-6 space-y-6">
-        <div>
-          <Label>Skills</Label>
-          <p className="mb-1.5 mt-0.5 text-xs text-text-gray">
-            Type a skill and press Enter — technical or soft skills both welcome.
-          </p>
-          <TagInput
-            values={skills}
-            onChange={onChangeSkills}
-            placeholder="e.g. React, Communication, Node.js"
-            accent="ocean"
-          />
-        </div>
-
-        <div>
-          <Label>Languages (optional)</Label>
-          <p className="mb-1.5 mt-0.5 text-xs text-text-gray">
-            e.g. English (native), Spanish (fluent)
-          </p>
-          <TagInput
-            values={languages}
-            onChange={onChangeLanguages}
-            placeholder="e.g. English (native)"
-            accent="purple"
-          />
-        </div>
+      <div>
+        <Label>{t("candidate.form.languages")}</Label>
+        <p className="mb-1.5 mt-0.5 text-xs text-text-gray">
+          {t("candidate.form.languagesHint")}
+        </p>
+        <TagInput
+          values={languages}
+          onChange={onChangeLanguages}
+          placeholder={t("candidate.form.languagesPlaceholder")}
+          accent="purple"
+        />
       </div>
     </div>
   );

@@ -1,21 +1,23 @@
 /*
  * DESIGN TOKENS — Skillsync brand palette.
  *
- * Sourced from /public/logo.png (navy-to-violet infinity mark) and
- * /public/brand.png (wordmark). Primary is the brand violet; navy is used
- * for the wordmark/high-contrast text via --brand-navy, not as a token
- * component uses directly. Components still consume colour via semantic
+ * Sourced from the UI team's design handoff (design-handoff/SkillSync_revisi.html):
+ * ocean blue + amber, Sora (headings) + Manrope (body). Replaces the earlier
+ * violet placeholder palette. Components still consume colour via semantic
  * names (bg-background, text-muted-foreground, border, …), never hardcoded
  * hex, so a future re-skin only needs to change the values here.
  *
  *   --background / --foreground   page surface + default text
  *   --card / --popover           raised surfaces (job cards, detail sheet)
- *   --primary                    brand violet — main action (buttons, active nav item)
+ *   --primary                    brand ocean blue — main action (buttons, active nav item)
  *   --secondary / --muted        subdued surfaces + secondary text
- *   --accent                     hover/selected surface (violet tint)
+ *   --accent                     hover/selected surface (amber tint)
  *   --destructive                error surfaces
+ *   --success / --warning        status surfaces (paired with an explicit text label, see below)
  *   --border / --input / --ring  outlines and focus rings
- *   --brand-navy / --brand-violet  raw logo hues, for the gradient wordmark/mark only
+ *   --brand-navy                 raw ink hue, for high-contrast wordmark text
+ *   --brand-accent-purple        the design file's one hardcoded purple (#7C5CFC) —
+ *                                logo/wordmark gradient only, never a general UI colour
  *   --radius                     0.625rem — the rounded-corner scale
  *
  * Status is never encoded in colour alone (no green=good / red=bad); badges
@@ -29,70 +31,82 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
+    --foreground: 210 56% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 210 56% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
+    --popover-foreground: 210 56% 12%;
 
-    --primary: 265 85% 58%;
+    --primary: 217 85% 34%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 250 40% 96%;
-    --secondary-foreground: 222 47% 14%;
+    --secondary: 210 45% 96%;
+    --secondary-foreground: 210 56% 12%;
 
-    --muted: 250 30% 96%;
-    --muted-foreground: 222 15% 45%;
+    --muted: 210 45% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 262 60% 95%;
-    --accent-foreground: 265 60% 30%;
+    --accent: 34 100% 94%;
+    --accent-foreground: 30 100% 38%;
 
-    --destructive: 0 65% 45%;
+    --destructive: 0 64% 56%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 250 20% 90%;
-    --input: 250 20% 90%;
-    --ring: 265 85% 58%;
+    --success: 158 75% 34%;
+    --success-foreground: 0 0% 98%;
 
-    --brand-navy: 219 70% 15%;
-    --brand-violet: 265 85% 58%;
+    --warning: 30 100% 48%;
+    --warning-foreground: 0 0% 98%;
+
+    --border: 212 37% 90%;
+    --input: 212 37% 90%;
+    --ring: 217 85% 34%;
+
+    --brand-navy: 210 56% 12%;
+    --brand-accent-purple: 252 96% 67%;
 
     --radius: 0.625rem;
   }
 
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 98%;
+    --background: 210 56% 8%;
+    --foreground: 210 20% 96%;
 
-    --card: 0 0% 11%;
-    --card-foreground: 0 0% 98%;
+    --card: 210 40% 12%;
+    --card-foreground: 210 20% 96%;
 
-    --popover: 0 0% 11%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 210 40% 12%;
+    --popover-foreground: 210 20% 96%;
 
-    --primary: 265 85% 65%;
-    --primary-foreground: 222 47% 9%;
+    --primary: 212 80% 55%;
+    --primary-foreground: 210 56% 10%;
 
-    --secondary: 222 20% 16%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 30% 18%;
+    --secondary-foreground: 210 20% 96%;
 
-    --muted: 222 20% 16%;
-    --muted-foreground: 220 10% 64%;
+    --muted: 210 30% 18%;
+    --muted-foreground: 215 16% 65%;
 
-    --accent: 265 40% 20%;
-    --accent-foreground: 265 60% 90%;
+    --accent: 30 60% 22%;
+    --accent-foreground: 30 100% 80%;
 
-    --destructive: 0 65% 65%;
-    --destructive-foreground: 222 47% 9%;
+    --destructive: 0 64% 65%;
+    --destructive-foreground: 210 56% 10%;
 
-    --border: 222 20% 22%;
-    --input: 222 20% 22%;
-    --ring: 265 85% 65%;
+    --success: 158 60% 45%;
+    --success-foreground: 210 56% 10%;
 
-    --brand-navy: 219 70% 60%;
-    --brand-violet: 265 85% 65%;
+    --warning: 30 90% 55%;
+    --warning-foreground: 210 56% 10%;
+
+    --border: 210 25% 24%;
+    --input: 210 25% 24%;
+    --ring: 212 80% 55%;
+
+    --brand-navy: 210 40% 70%;
+    --brand-accent-purple: 252 96% 72%;
   }
 }
 
@@ -101,7 +115,10 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading;
   }
 }
 

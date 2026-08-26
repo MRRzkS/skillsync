@@ -1,13 +1,22 @@
 import { Document, Page, View, Text, StyleSheet, Link } from "@react-pdf/renderer";
 import type { CvData } from "@/lib/candidate/cv-schema";
+import type { CvTemplate } from "@/components/candidate/cv-preview";
 import { normalizeUrl } from "@/lib/utils";
 
 /**
  * Plain, ATS-friendly PDF rendering of a CvData object.
  * Kept deliberately simple (no tables, no images, no multi-column layout)
  * so applicant tracking systems can parse it reliably.
- * This must always be driven by the same CvData used in <CvPreview />.
+ * This must always be driven by the same CvData used in <CvPreview /> —
+ * including which template is selected, so the downloaded file matches what
+ * was actually previewed.
  */
+
+const TEMPLATE_ACCENT: Record<CvTemplate, { side: "left" | "top" | null; color: string }> = {
+  classic: { side: null, color: "" },
+  modern: { side: "left", color: "#7C5CFC" },
+  minimal: { side: "top", color: "#F59E0B" },
+};
 
 const COLORS = {
   ocean: "#1A5F7A",
@@ -140,12 +149,20 @@ function ContactLine({ cv }: { cv: CvData }) {
   );
 }
 
-export function CvPdfDocument({ cv }: { cv: CvData }) {
+export function CvPdfDocument({ cv, template = "classic" }: { cv: CvData; template?: CvTemplate }) {
   const latestRole = cv.experience[0]?.role;
+  const accent = TEMPLATE_ACCENT[template];
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {accent.side === "left" && (
+          <View style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, backgroundColor: accent.color }} />
+        )}
+        {accent.side === "top" && (
+          <View style={{ position: "absolute", left: 0, right: 0, top: 0, height: 4, backgroundColor: accent.color }} />
+        )}
+
         {/* Header */}
         <View>
           <Text style={styles.name}>{cv.contact.fullName || "Candidate"}</Text>

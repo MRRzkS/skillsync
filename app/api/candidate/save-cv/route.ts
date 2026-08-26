@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cvSchema } from "@/lib/candidate/cv-schema";
+import { cvSchema, type CvData } from "@/lib/candidate/cv-schema";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAuthServerClient } from "@/lib/supabase/auth-server";
+import { reviewCvWithStar } from "@/lib/ai/cv-star-review";
 
 export const runtime = "nodejs";
 
@@ -73,10 +74,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Fire-and-forget: review the CV with AI now, off the request/response
+    // path, so /candidate/cv-review can read a cached result instead of
+    // calling the model on every visit. Not awaited — its own try/catch
+    // means a failure here never affects the save response the candidate is
+    // waiting on; the review page falls back to generating on the spot if
+    // this hasn't finished (or errored) by the time they open it.
+    void runBackgroundStarReview(data, inserted.id, supabase);
+
     return NextResponse.json({ cv: data, candidateId: inserted.id });
   } catch (err) {
     console.error("save-cv failed:", err);
     const message = err instanceof Error ? err.message : "Failed to save CV.";
     return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+async function runBackgroundStarReview(
+  cv: CvData,
+  candidateId: string,
+  supabase: ReturnType<typeof createServerSupabaseClient>
+) {
+  try {
+    const review = await reviewCvWithStar(cv);
+    await supabase.from("candidate_profiles").update({ star_review: review }).eq("id", candidateId);
+  } catch (err) {
+    console.error("Background STAR review failed:", err);
   }
 }

@@ -26,10 +26,9 @@ export default async function ResumeBuilderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-cloud">
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 lg:px-8 lg:pt-12">
-        <CvWizard initialCv={initialCv} />
-      </div>
-    </main>
+    // The (app) layout already provides <main> and the page background.
+    <div className="mx-auto max-w-7xl px-4 pb-16 pt-8 lg:px-8">
+      <CvWizard initialCv={initialCv} />
+    </div>
   );
 }
