@@ -155,8 +155,38 @@ function SiteNav() {
 function Hero() {
   const { t } = useTranslation();
   return (
-    <section className="relative overflow-hidden py-16 md:py-24">
-      <div className="container mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-2">
+    <section
+      className="relative overflow-hidden py-16 md:py-24"
+      style={{
+        // Matches the UI team's reference exactly (design-handoff/
+        // SkillSync_revisi.html, .hero rule) — four stacked radial glows
+        // (ocean blue top-right, amber bottom-left, two faint blue accents)
+        // over a near-white base gradient. Values ported as-is rather than
+        // reinterpreted through Tailwind's gradient utilities, which can't
+        // express more than two radial layers at once.
+        backgroundImage: [
+          "radial-gradient(760px 480px at 85% 4%, rgba(13,71,161,.24), transparent 60%)",
+          "radial-gradient(600px 460px at 4% 92%, rgba(255,204,128,.46), transparent 60%)",
+          "radial-gradient(480px 380px at 42% -6%, rgba(13,71,161,.14), transparent 65%)",
+          "radial-gradient(360px 320px at 60% 40%, rgba(21,101,192,.10), transparent 70%)",
+          "linear-gradient(165deg, #fff 0%, #fcfbff 45%, #f8fcfb 100%)",
+        ].join(", "),
+      }}
+    >
+      {/* Faint grid, masked to a soft circle in the top-right — same as the
+          reference's .hero:before. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-50"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(13,71,161,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(13,71,161,.05) 1px, transparent 1px)",
+          backgroundSize: "46px 46px",
+          maskImage: "radial-gradient(circle at 78% 10%, #000, transparent 62%)",
+          WebkitMaskImage: "radial-gradient(circle at 78% 10%, #000, transparent 62%)",
+        }}
+      />
+      <div className="container relative z-[2] mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-2">
         <div>
           <div className="inline-flex items-center rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
             {t("home.heroBadge")}
