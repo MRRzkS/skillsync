@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,7 +21,6 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { SkillSyncLogo } from "@/components/candidate/layout/skillsync-logo";
 import { WIZARD_STEP_KEYS, useWizardNav } from "@/components/candidate/layout/wizard-nav";
 import { LOCALES, useTranslation, type Locale } from "@/lib/i18n";
 
@@ -236,7 +236,7 @@ export function CandidateSidebar() {
 
         <div className="flex items-center justify-between md:mt-5">
           <Link href={BUILDER_URL} className="flex items-center gap-2.5">
-            <SkillSyncLogo className="h-8 w-8" />
+            <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8" priority />
             <p className="font-candidate-heading text-lg font-bold text-text-dark">
               Skill<span className="text-sync-purple-600">sync</span>
             </p>

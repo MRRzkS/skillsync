@@ -1,19 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateTextWithFallback } from "@/lib/ai/openrouter";
+import { resolveLanguage, languageInstruction } from "@/lib/ai/language";
 
 export const runtime = "nodejs";
 
-const SYSTEM_PROMPT = `You polish a candidate-written professional summary for a CV.
+function buildSystemPrompt(languageLine: string) {
+  return `You polish a candidate-written professional summary for a CV.
 
 Rules:
 - Only rephrase, tighten, and clarify what the candidate already wrote.
 - Never invent employers, job titles, schools, dates, or metrics that are not present in the candidate's draft or the provided context.
 - Keep it to 2-3 concise, ATS-friendly sentences.
 - Do not use the word "I"; write in an implied first-person, resume-style voice.
+- ${languageLine}
 - Return only the rewritten summary text, with no preamble, quotes, or labels.`;
+}
 
 interface ImproveSummaryBody {
   summary: string;
+  locale?: string | null;
   context?: {
     title?: string;
     topSkills?: string[];
@@ -39,10 +44,11 @@ export async function POST(req: NextRequest) {
 
   const title = body.context?.title?.trim();
   const topSkills = (body.context?.topSkills ?? []).filter(Boolean);
+  const language = resolveLanguage(body.locale, summary);
 
   try {
     const text = await generateTextWithFallback({
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(languageInstruction(language)),
       user: `Candidate's professional title: ${title || "not provided"}
 Key skills the candidate listed: ${topSkills.length > 0 ? topSkills.join(", ") : "not provided"}
 

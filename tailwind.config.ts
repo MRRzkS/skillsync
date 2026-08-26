@@ -71,13 +71,20 @@ const config: Config = {
         attention: "#C98A3B",
         attentionsoft: "#F5E9D8",
         line: "#D8D3C8",
-        // Aligned to the design handoff's ocean blue (was a teal placeholder).
+        // Matches the UI team's published palette exactly (Ocean Blue
+        // #1A5F7A, Sync Purple #7C5CFC, Mint #A6E4D4, Cloud White #F6F9F6).
+        // A prior pass here mistakenly used #0D47A1 for "ocean" — that hex is
+        // actually the file prototype's --purple/--ocean-deep navy, not the
+        // team's real ocean teal; #0D47A1 is still correct where it's used
+        // for the navy→purple/navy→amber gradients elsewhere (cv-wizard.tsx,
+        // profile-view.tsx, opengraph-image.tsx), which intentionally use the
+        // deeper navy as one gradient stop, not this token.
         ocean: {
-          DEFAULT: "#0D47A1",
-          50: "#E8F0FB",
-          100: "#C7DBF5",
-          600: "#0D47A1",
-          700: "#082B6B",
+          DEFAULT: "#1A5F7A",
+          50: "#EAF3F5",
+          100: "#CBE1E7",
+          600: "#1A5F7A",
+          700: "#134A60",
         },
         "sync-purple": {
           DEFAULT: "#7C5CFC",
@@ -87,12 +94,12 @@ const config: Config = {
           700: "#6642E0",
         },
         mint: {
-          DEFAULT: "#A6E3D4",
-          50: "#EEFBF7",
-          100: "#DBF5EE",
+          DEFAULT: "#A6E4D4",
+          50: "#EEFBF8",
+          100: "#DBF6EF",
           600: "#3FA98A",
         },
-        cloud: "#F8F9FB",
+        cloud: "#F6F9F6",
         "text-dark": "#172033",
         "text-gray": "#667085",
       },
