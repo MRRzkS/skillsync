@@ -161,16 +161,24 @@ function Hero() {
         // Matches the UI team's reference exactly (design-handoff/
         // SkillSync_revisi.html, .hero rule) — four stacked radial glows
         // (ocean blue top-right, amber bottom-left, two faint blue accents)
-        // over a near-white base gradient. Values ported as-is rather than
-        // reinterpreted through Tailwind's gradient utilities, which can't
-        // express more than two radial layers at once.
+        // over a near-white base gradient. Values ported as-is, with two
+        // fixes the prototype's static canvas never had to deal with:
+        // - each radial fades to a transparent version of ITS OWN colour
+        //   (not the bare `transparent` keyword, which is transparent
+        //   *black* — interpolating a solid colour into that produces a
+        //   visible dark/muddy band instead of a clean fade);
+        // - backgroundRepeat: no-repeat, since this section's height is
+        //   content-driven (unlike the fixed-height design mockup) and can
+        //   exceed a radial's box, which would otherwise tile it and show
+        //   as a hard seam.
         backgroundImage: [
-          "radial-gradient(760px 480px at 85% 4%, rgba(13,71,161,.24), transparent 60%)",
-          "radial-gradient(600px 460px at 4% 92%, rgba(255,204,128,.46), transparent 60%)",
-          "radial-gradient(480px 380px at 42% -6%, rgba(13,71,161,.14), transparent 65%)",
-          "radial-gradient(360px 320px at 60% 40%, rgba(21,101,192,.10), transparent 70%)",
+          "radial-gradient(760px 480px at 85% 4%, rgba(13,71,161,.24), rgba(13,71,161,0) 60%)",
+          "radial-gradient(600px 460px at 4% 92%, rgba(255,204,128,.46), rgba(255,204,128,0) 60%)",
+          "radial-gradient(480px 380px at 42% -6%, rgba(13,71,161,.14), rgba(13,71,161,0) 65%)",
+          "radial-gradient(360px 320px at 60% 40%, rgba(21,101,192,.10), rgba(21,101,192,0) 70%)",
           "linear-gradient(165deg, #fff 0%, #fcfbff 45%, #f8fcfb 100%)",
         ].join(", "),
+        backgroundRepeat: "no-repeat",
       }}
     >
       {/* Faint grid, masked to a soft circle in the top-right — same as the
@@ -219,7 +227,10 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative">
+        {/* Extra bottom padding reserves room for the floating verification
+            chip below, so its overhang stays inside the section instead of
+            crossing the hard edge into the next section's plain background. */}
+        <div className="relative pb-6 sm:pb-8">
           <div className="pointer-events-none absolute -inset-x-6 -inset-y-10 -z-10 rounded-full bg-gradient-to-br from-primary/10 via-transparent to-[hsl(var(--brand-accent-purple))]/10 blur-2xl" />
           <div className="relative animate-float rounded-2xl border border-border bg-card p-6 shadow-lg">
             <div className="flex items-center justify-between border-b border-border pb-4">
