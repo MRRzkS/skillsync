@@ -59,6 +59,14 @@
     "candidatePanelPoint2Title": "Verifikasi Kemampuan",
     "candidatePanelPoint2Body": "Selesaikan simulasi kompetensi selama 3 menit, dari HP."
   },
+  "roleMismatch": {
+    "title": "Akun ini tidak terdaftar untuk sisi tersebut",
+    "bodyHr": "Akun Anda terdaftar sebagai HR. Anda mencoba masuk sebagai Kandidat.",
+    "bodyCandidate": "Akun Anda terdaftar sebagai Kandidat. Anda mencoba masuk sebagai HR.",
+    "goToDashboard": "Ke dashboard saya",
+    "createNewAccount": "Keluar dan buat akun baru",
+    "signingOut": "Sedang keluar..."
+  },
   "home": {
     "navSolutions": "Solusi",
     "navForCandidates": "Untuk Kandidat",
@@ -220,7 +228,9 @@
     "enhanceNeedsTitle": "Isi nama posisi dulu agar AI tahu apa yang perlu dikembangkan.",
     "enhanceNeedsNotes": "Tulis beberapa catatan tentang posisi ini dulu.",
     "enhanceFailed": "AI gagal menyempurnakan deskripsi. Silakan coba lagi.",
-    "errorGenerate": "AI gagal menyusun pertanyaan skenario yang valid. Isian kamu tetap tersimpan — silakan coba lagi."
+    "errorGenerate": "AI gagal menyusun pertanyaan skenario yang valid. Isian kamu tetap tersimpan — silakan coba lagi.",
+    "createdHint": "Lowongan berhasil dibuat. Tinjau 3 pertanyaan di bawah, lalu lanjut ke dashboard peringkat kapan pun kamu siap.",
+    "goToDashboard": "Ke Dashboard Peringkat"
   },
   "dashboard": {
     "eyebrow": "Kartu Skor Kandidat",

@@ -59,6 +59,14 @@
     "candidatePanelPoint2Title": "Skill Verification",
     "candidatePanelPoint2Body": "Complete a 3-minute competency check, right from your phone."
   },
+  "roleMismatch": {
+    "title": "This account isn't registered for that side",
+    "bodyHr": "Your account is registered as HR. You tried signing in as a Candidate.",
+    "bodyCandidate": "Your account is registered as a Candidate. You tried signing in as HR.",
+    "goToDashboard": "Go to my dashboard",
+    "createNewAccount": "Log out and create a new account",
+    "signingOut": "Logging out..."
+  },
   "home": {
     "navSolutions": "Solutions",
     "navForCandidates": "For Candidates",
@@ -220,7 +228,9 @@
     "enhanceNeedsTitle": "Add a job title first so AI knows what to expand.",
     "enhanceNeedsNotes": "Type a few notes about the role first.",
     "enhanceFailed": "AI failed to enhance the description. Please try again.",
-    "errorGenerate": "AI failed to generate valid scenario questions. Your input is kept — please try again."
+    "errorGenerate": "AI failed to generate valid scenario questions. Your input is kept — please try again.",
+    "createdHint": "Job created. Review the 3 questions below, then continue to the ranking dashboard whenever you're ready.",
+    "goToDashboard": "Go to Ranking Dashboard"
   },
   "dashboard": {
     "eyebrow": "Candidate Scorecard",
