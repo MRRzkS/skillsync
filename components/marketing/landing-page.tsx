@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FileText, Sparkles, ShieldCheck, ArrowRight, Star, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
+import { WhatsAppCta } from "@/components/marketing/whatsapp-cta";
 import { LOCALES, useTranslation, type Locale } from "@/lib/i18n";
 
 // Landing page built from the UI team's design handoff
@@ -28,6 +29,7 @@ export function LandingPage() {
       <Faq />
       <Cta />
       <SiteFooter />
+      <WhatsAppCta />
     </div>
   );
 }
