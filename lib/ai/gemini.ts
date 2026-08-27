@@ -1,7 +1,8 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
-// Fallback provider, only reached when OpenRouter fails (rate limit, outage,
-// etc — see lib/ai/openrouter.ts). Not used as a primary provider anywhere.
+// Primary provider — faster than OpenRouter's free-tier models, which matters
+// for a live hackathon demo. OpenRouter (lib/ai/openrouter.ts) is now the
+// fallback, only reached when Gemini fails (rate limit, outage, etc).
 function getApiKey() {
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) {

@@ -24,14 +24,15 @@ export async function POST(req: Request) {
     );
   }
 
-  // OpenRouter's free tier rate-limits hard. Unlike generateJson, a
+  // Gemini is primary (faster than OpenRouter's free-tier models, which
+  // matters for a live demo) but can still rate-limit. Unlike generateJson, a
   // streaming request already has bytes on the wire the moment it starts, so
   // we can't switch models mid-stream — instead the client retries once with
   // `fallback: true` when the first attempt's onError fires (see
-  // app/hr/new-job/page.tsx), and we honor that by using Gemini here.
+  // app/hr/new-job/page.tsx), and we honor that by using OpenRouter here.
   const model = useFallback
-    ? createGeminiProvider()(GEMINI_MODEL)
-    : createOpenRouterProvider()(OPENROUTER_MODEL);
+    ? createOpenRouterProvider()(OPENROUTER_MODEL)
+    : createGeminiProvider()(GEMINI_MODEL);
   const { system, user } = buildScenarioPrompt({ title, jdText, locale });
 
   const result = streamObject({

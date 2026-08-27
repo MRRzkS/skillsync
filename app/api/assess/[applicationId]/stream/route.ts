@@ -60,10 +60,11 @@ export async function POST(
   }
 
   // See app/api/hr/jobs/stream/route.ts for why this is a client-driven
-  // retry instead of an in-request fallback.
+  // retry instead of an in-request fallback. Gemini is primary; OpenRouter is
+  // the fallback used when `fallback: true`.
   const model = useFallback
-    ? createGeminiProvider()(GEMINI_MODEL)
-    : createOpenRouterProvider()(OPENROUTER_MODEL);
+    ? createOpenRouterProvider()(OPENROUTER_MODEL)
+    : createGeminiProvider()(GEMINI_MODEL);
   const { system, user } = buildScoringPrompt({
     cvJson: candidate.cv_json,
     jdText: job.jd_text,

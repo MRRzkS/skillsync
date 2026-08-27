@@ -5,6 +5,8 @@ import { createGeminiProvider, GEMINI_MODEL } from "./gemini";
 
 // OpenRouter exposes an OpenAI-compatible API, so we point the official
 // Vercel AI SDK OpenAI provider at OpenRouter's base URL with a free model.
+// Gemini is the primary provider (see lib/ai/gemini.ts) — OpenRouter's free
+// models are too slow for a live demo, so this is now the fallback.
 function getApiKey() {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
@@ -43,9 +45,9 @@ export async function generateJson<T>(params: {
   temperature?: number;
 }): Promise<T> {
   try {
-    const openrouter = createOpenRouterProvider();
+    const gemini = createGeminiProvider();
     const { object } = await generateObject({
-      model: openrouter(OPENROUTER_MODEL),
+      model: gemini(GEMINI_MODEL),
       schema: params.schema,
       temperature: params.temperature ?? 0.4,
       system: params.system,
@@ -53,12 +55,13 @@ export async function generateJson<T>(params: {
     });
     return object;
   } catch (err) {
-    // OpenRouter's free tier rate-limits hard — fall back to Gemini rather
-    // than surface an error the user can't do anything about.
-    console.error("[ai] OpenRouter failed, falling back to Gemini:", err);
-    const gemini = createGeminiProvider();
+    // Gemini is primary for latency (OpenRouter's free-tier models are too
+    // slow for a live hackathon demo) — fall back to OpenRouter rather than
+    // surface an error the user can't do anything about.
+    console.error("[ai] Gemini failed, falling back to OpenRouter:", err);
+    const openrouter = createOpenRouterProvider();
     const { object } = await generateObject({
-      model: gemini(GEMINI_MODEL),
+      model: openrouter(OPENROUTER_MODEL),
       schema: params.schema,
       temperature: params.temperature ?? 0.4,
       system: params.system,
@@ -68,26 +71,26 @@ export async function generateJson<T>(params: {
   }
 }
 
-/** Same OpenRouter-then-Gemini fallback as generateJson, for plain text output. */
+/** Same Gemini-then-OpenRouter fallback as generateJson, for plain text output. */
 export async function generateTextWithFallback(params: {
   system: string;
   user: string;
   temperature?: number;
 }): Promise<string> {
   try {
-    const openrouter = createOpenRouterProvider();
+    const gemini = createGeminiProvider();
     const { text } = await generateText({
-      model: openrouter(OPENROUTER_MODEL),
+      model: gemini(GEMINI_MODEL),
       temperature: params.temperature ?? 0.4,
       system: params.system,
       prompt: params.user,
     });
     return text;
   } catch (err) {
-    console.error("[ai] OpenRouter failed, falling back to Gemini:", err);
-    const gemini = createGeminiProvider();
+    console.error("[ai] Gemini failed, falling back to OpenRouter:", err);
+    const openrouter = createOpenRouterProvider();
     const { text } = await generateText({
-      model: gemini(GEMINI_MODEL),
+      model: openrouter(OPENROUTER_MODEL),
       temperature: params.temperature ?? 0.4,
       system: params.system,
       prompt: params.user,
