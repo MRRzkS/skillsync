@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { useObject } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,7 +27,6 @@ function generateId() {
 const MIN_JD_LENGTH = 40;
 
 export default function NewJobPage() {
-  const router = useRouter();
   const { t, locale } = useTranslation();
   const [title, setTitle] = useState("");
   const [jdText, setJdText] = useState("");
@@ -36,6 +36,10 @@ export default function NewJobPage() {
   // OpenRouter fails — see app/api/hr/jobs/stream/route.ts.
   const lastPayload = useRef<Record<string, unknown> | null>(null);
   const hasRetried = useRef(false);
+  // Set once generation finishes cleanly, so the page can offer a link to the
+  // ranking dashboard instead of navigating there immediately — HR should get
+  // to read the 3 generated questions first.
+  const [createdJobId, setCreatedJobId] = useState<string | null>(null);
 
   const { object, submit, isLoading } = useObject({
     api: "/api/hr/jobs/stream",
@@ -55,7 +59,10 @@ export default function NewJobPage() {
         setError(t("newJob.errorGenerate"));
         return;
       }
-      router.push(`/hr/dashboard/${pendingJobId.current}`);
+      // Stay on this page so HR can read the generated questions; the
+      // dashboard is one click away via the CTA below instead of an
+      // automatic redirect.
+      setCreatedJobId(pendingJobId.current);
     },
     onError: (err) => {
       if (!hasRetried.current && lastPayload.current) {
@@ -85,6 +92,7 @@ export default function NewJobPage() {
     const id = generateId();
     pendingJobId.current = id;
     hasRetried.current = false;
+    setCreatedJobId(null);
     const payload = { id, title, jd_text: jdText, locale };
     lastPayload.current = payload;
     submit(payload);
@@ -156,9 +164,24 @@ export default function NewJobPage() {
 
         {showPreview && (
           <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("newJob.generatedTitle")}
-            </h2>
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("newJob.generatedTitle")}
+              </h2>
+              {createdJobId && (
+                <Button asChild size="sm" variant="outline">
+                  <Link href={`/hr/dashboard/${createdJobId}`}>
+                    {t("newJob.goToDashboard")}
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </Button>
+              )}
+            </div>
+            {createdJobId && (
+              <p className="rounded-md border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+                {t("newJob.createdHint")}
+              </p>
+            )}
             <div className="space-y-3">
               {[0, 1, 2].map((index) => {
                 const question = object?.questions?.[index];

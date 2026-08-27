@@ -108,6 +108,16 @@ export default function AuthForm({
         effectiveRole = role;
       }
 
+      // The signed-in account's real role can differ from the entrance used
+      // to sign in — either /login's role picker was set to the wrong side,
+      // or an HR account landed on /candidate/login (which pins "candidate").
+      // Tell them instead of just silently sending them to their real
+      // dashboard.
+      if (effectiveRole !== role) {
+        window.location.href = `/role-mismatch?role=${effectiveRole}`;
+        return;
+      }
+
       window.location.href = destinationFor(effectiveRole);
     } finally {
       setIsSubmitting(false);
