@@ -49,7 +49,16 @@ export async function GET(request: NextRequest) {
     await supabase.from("profiles").insert({ id: data.user.id, role });
   }
 
-  const destination = finalRole === "hr" ? "/hr/jobs" : "/candidate";
+  // Same mismatch case as the password flow in auth-form.tsx: an existing
+  // account's real role can differ from the entrance used to start Google
+  // OAuth. Send them to an explanation instead of silently landing on their
+  // real dashboard.
+  const destination =
+    existingProfile && finalRole !== role
+      ? `/role-mismatch?role=${finalRole}`
+      : finalRole === "hr"
+        ? "/hr/jobs"
+        : "/candidate";
   const redirectResponse = NextResponse.redirect(`${origin}${destination}`);
   cookiesToApply.forEach(({ name, value, options }) =>
     redirectResponse.cookies.set(name, value, options)
